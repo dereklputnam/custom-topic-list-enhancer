@@ -1,2 +1,66 @@
-example_setting:
-  default: true
+
+solutions:
+  type: objects
+  default: 
+    - slug: "directory-management"
+      title: "Directory Management"
+      subtitle: "Netwrix Directory Management News & Security Advisories"
+      description: "Stay informed with the latest updates and security alerts for Auditor, Directory Manager, and Password Policy Enforcer."
+      level_4_categories: "90,110,118"
+      level_3_categories: "195,204,210"
+    - slug: "endpoint-management"
+      title: "Endpoint Management"
+      subtitle: "Netwrix Endpoint Management News & Security Advisories"
+      description: "Stay informed with the latest updates and security alerts for Endpoint Protector, Endpoint Policy Manager, and Change Tracker."
+      level_4_categories: "106,130,98"
+      level_3_categories: "202,208,198"
+    - slug: "identity-management"
+      title: "Identity Management"
+      subtitle: "Netwrix Identity Management News & Security Advisories"
+      description: "Stay informed with the latest updates and security alerts for Identity Manager, Directory Manager, and Password Policy Enforcer."
+      level_4_categories: "150,110,118"
+      level_3_categories: "196,204,210"
+    - slug: "itdr"
+      title: "ITDR"
+      subtitle: "Netwrix Identity Threat Detection & Response (ITDR) News & Security Advisories"
+      description: "Stay informed with the latest updates and security alerts for PingCastle, Access Analyzer, Threat Manager, Threat Prevention, and Recovery for AD."
+      level_4_categories: "126,94,162,160,138"
+      level_3_categories: "209,197,201,199,206"
+    - slug: "pam"
+      title: "Privileged Access Management"
+      subtitle: "Netwrix Privileged Access Management News & Security Advisories"
+      description: "Stay informed with the latest updates and security alerts for Privilege Secure, Endpoint Privilege Manager, and Password Secure."
+      level_4_categories: "134,130,122"
+      level_3_categories: "207,208,211"
+    - slug: "dspm"
+      title: "DSPM"
+      subtitle: "Netwrix Data Security Posture Management (DSPM) News & Security Advisories"
+      description: "Stay informed with the latest updates and security alerts for Auditor, Access Analyzer, Data Classification, and Endpoint Protector."
+      level_4_categories: "90,94,102,106"
+      level_3_categories: "195,197,200,202"
+  schema:
+    name: "Solution"
+    identifier: "title"
+    properties:
+      slug:
+        type: string
+        required: true
+        description: "IMPORTANT: This slug must exactly match the slug configured in your Custom Topic Lists theme component"
+      title:
+        type: string
+        required: true
+        description: "Short title displayed in navigation and as tab name"
+      subtitle:
+        type: string
+        required: true
+        description: "Full title displayed as page header ('News & Security Advisories' is automatically added on the next line). For responsive line breaks on smaller screens, insert: [span class=\"break-medium\"][br][/span] (replace brackets with angle brackets)"
+      description:
+        type: string
+        required: true
+        description: "Description text shown on the page"
+      level_4_categories:
+        type: string
+        description: "Comma-separated category IDs for 'Watching First Post' notifications (e.g., '5,12,8')"
+      level_3_categories:
+        type: string
+        description: "Comma-separated category IDs for 'Watching' notifications (e.g., '3,7,15')"

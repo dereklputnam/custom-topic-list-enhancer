@@ -1,0 +1,158 @@
+// Hide navigation elements that break the list view - PRIORITY: hide immediately
+#navigation-bar .nav-item_categories,
+#navigation-bar .nav-item_latest, 
+#navigation-bar .nav-item_new,
+#navigation-bar .nav-item_top,
+#navigation-bar .nav-item_unread {
+  display: none !important;
+}
+
+// Hide category and tag filter dropdowns that break the solution list view
+.category-breadcrumb .category-drop,
+.category-breadcrumb .tag-drop:not(.custom-list-dropdown),
+.category-breadcrumb li:has(.category-drop),
+.category-breadcrumb li:has(.tag-drop:not(.custom-list-dropdown)),
+.navigation-container .category-breadcrumb li:first-child,
+.navigation-container .category-breadcrumb li:nth-child(2) {
+  display: none !important;
+}
+
+// Hide header content until JavaScript styling loads on solution pages
+body[class*="/lists/"] .category-title-header,
+body[class*="lists-"] .category-title-header {
+  visibility: hidden;
+  min-height: 150px; // Reserve space to prevent layout shift
+  
+  &.header-styled {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+  }
+}
+
+  .category-title {
+    font-size: clamp(26px, 4vw, 32px) !important;
+    font-weight: 700 !important;
+    color: var(--primary) !important;
+    line-height: 1.2 !important;
+    max-width: 850px !important;
+    margin: 0 auto 16px !important;
+  }
+
+  .category-title-description .solution-subtext {
+    font-size: 17px !important;
+    color: var(--primary-high) !important;
+    line-height: 1.6 !important;
+    max-width: 750px !important;
+    margin: 0 auto !important;
+    
+    strong {
+      color: var(--primary) !important;
+      font-weight: 600 !important;
+    }
+  }
+}
+
+// Subscribe button styling
+.subscribe-wrapper {
+  margin-left: auto;
+
+  .subscribe-btn {
+    all: unset;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 8px 12px;
+    background: var(--tertiary);
+    color: var(--secondary);
+    border-radius: 4px;
+    white-space: nowrap;
+
+    &.subscribed {
+      background: var(--success);
+      color: var(--success-contrast);
+    }
+  }
+}
+
+// Enhanced styling for solution subscribe button - override all Discourse button styles
+#solution-subscribe-button,
+#solution-subscribe-button.btn,
+#solution-subscribe-button.btn-default,
+#solution-subscribe-button.btn-primary,
+button#solution-subscribe-button {
+  font-weight: 500 !important;
+  padding: 8px 16px !important;
+  border-radius: 4px !important;
+  border: 1px solid #0088cc !important;
+  background: white !important;
+  background-color: white !important;
+  background-image: none !important;
+  color: #0088cc !important;
+  white-space: nowrap !important;
+  font-size: 14px !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  
+  &:hover,
+  &:focus,
+  &:active {
+    background: #f0f8ff !important;
+    background-color: #f0f8ff !important;
+    background-image: none !important;
+    border-color: #0066aa !important;
+    color: #0066aa !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  &.subscribed {
+    background: white !important;
+    background-color: white !important;
+    background-image: none !important;
+    color: #28a745 !important;
+    border-color: #28a745 !important;
+    
+    &:hover,
+    &:focus,
+    &:active {
+      background: #f0fff0 !important;
+      background-color: #f0fff0 !important;
+      background-image: none !important;
+      border-color: #1e7e34 !important;
+      color: #1e7e34 !important;
+      box-shadow: none !important;
+      text-shadow: none !important;
+    }
+  }
+
+  // Mobile responsiveness - hide long text on small screens
+  .mobile-hidden {
+    @media (max-width: 768px) {
+      display: none !important;
+    }
+  }
+}
+
+// Responsive line breaks for titles - hide by default, show only when needed
+.category-title .break-medium { 
+  display: none !important; 
+}
+
+.category-title .break-small { 
+  display: none !important; 
+}
+
+// Show breaks on medium screens (tablets/small desktops)
+@media (max-width: 1200px) {
+  .category-title .break-medium { 
+    display: inline !important; 
+  }
+}
+
+// Show breaks on small screens (phones)
+@media (max-width: 768px) {
+  .category-title .break-small { 
+    display: inline !important; 
+  }
+}
+
