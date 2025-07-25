@@ -1,0 +1,13 @@
+{
+  "name": "Category Subscribe Button",
+  "component": true,
+  "license_url": "https://github.com/derekputnam/category-subscribe-button/blob/main/LICENSE",
+  "about_url": "https://github.com/derekputnam/category-subscribe-button",
+  "authors": "Derek Putnam",
+  "theme_version": "2.0.0",
+  "minimum_discourse_version": "3.0.0",
+  "maximum_discourse_version": null,
+  "assets": {},
+  "modifiers": {},
+  "learn_more": "https://meta.discourse.org/t/beginners-guide-to-using-discourse-themes/91966"
+}

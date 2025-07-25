@@ -1,0 +1,23 @@
+subscribe_categories:
+  type: list
+  list_type: category
+  default: ""
+  description: "Select categories that should receive 'news treatment' (notification level 4 - Watching First Post). Shows 'Subscribe' button. Will display as 'Parent > Child' format (e.g., '1Secure News')."
+
+subscribe_category_name_only_exceptions:
+  type: list
+  list_type: category
+  default: ""
+  description: "Select subscribe categories that should display only their category name (not 'Parent > Child' format). E.g., 'Security Advisories' instead of '1Secure Security Advisories'."
+
+watching_categories:
+  type: list
+  list_type: category
+  default: ""
+  description: "Select categories that should receive 'security advisory treatment' (notification level 3 - Watching). Shows 'Watch All' button. Will display as 'Parent > Child' format (e.g., '1Secure Security Advisories')."
+
+watching_category_name_only_exceptions:
+  type: list
+  list_type: category
+  default: ""
+  description: "Select watching categories that should display only their category name (not 'Parent > Child' format). E.g., 'Security Advisories' instead of '1Secure Security Advisories'."
