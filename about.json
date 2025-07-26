@@ -1,15 +1,13 @@
 {
-  "name": "Netwrix - Custom Topic Lists Enhancer for Solution Pages",
-  "component": true,
-  "authors": "Derek Putnam",
-  "about_url": "https://github.com/derekputnam/custom-topic-list-enhancer",
-  "license_url": "https://github.com/derekputnam/custom-topic-list-enhancer/blob/main/LICENSE",
-  "learn_more": "https://meta.discourse.org/t/beginners-guide-to-using-discourse-themes/91966",
-  "theme_version": "1.0.0",
-  "minimum_discourse_version": "3.0.0",
+  "name": "Netwrix - Modifications for Solutions",
+  "about_url": null,
+  "license_url": null,
+  "authors": null,
+  "theme_version": null,
+  "minimum_discourse_version": null,
   "maximum_discourse_version": null,
-  "assets": {
-  },
-  "modifiers": {
-  }
+  "assets": {},
+  "color_schemes": {},
+  "modifiers": {},
+  "learn_more": "https://meta.discourse.org/t/beginners-guide-to-using-discourse-themes/91966"
 }
