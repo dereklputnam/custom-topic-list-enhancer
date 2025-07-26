@@ -67,40 +67,6 @@ export default apiInitializer("0.11.1", (api) => {
   }
   
 
-  // Log categories for reference only in admin or development mode
-  const currentUser = api.getCurrentUser();
-  const isAdmin = currentUser?.admin || currentUser?.moderator;
-  const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname.includes('dev');
-  
-  if (isAdmin || isDevelopment) {
-    ajax("/site.json").then((siteData) => {
-      console.log("=== AVAILABLE CATEGORIES FOR THEME SETTINGS ===");
-      console.log("Copy the 'ID' values into your theme component settings:");
-      
-      const categoryTable = siteData.categories.map(cat => {
-        const parent = siteData.categories.find(p => p.id === cat.parent_category_id);
-        return {
-          name: cat.name,
-          slug: cat.slug,
-          id: cat.id,
-          parent: parent ? parent.name : 'None',
-          full_name: parent ? `${parent.name} > ${cat.name}` : cat.name
-        };
-      }).sort((a, b) => a.full_name.localeCompare(b.full_name));
-      
-      console.table(categoryTable);
-      
-      // Also log as a simple list for easy copying
-      console.log("\n=== CATEGORY IDS FOR COPY/PASTE ===");
-      categoryTable.forEach(cat => {
-        console.log(`${cat.id} (${cat.full_name})`);
-      });
-      
-      console.log("\n=== EXAMPLE USAGE ===");
-      console.log("For comma-separated lists, use:");
-      console.log("5,12,8 (where numbers are category IDs)");
-    });
-  }
 
   // Function to get current solution config
   function getCurrentSolutionConfig() {
@@ -112,21 +78,13 @@ export default apiInitializer("0.11.1", (api) => {
     const solutionConfig = settings.solutions?.find(solution => solution.slug === slug);
     
     if (!solutionConfig) {
-      console.log(`No solution configuration found for slug: ${slug}`);
-      console.log(`Available solutions:`, settings.solutions?.map(s => s.slug));
       return null;
     }
-
-    console.log(`Found solution config for: ${solutionConfig.title} (slug: ${slug})`);
     return { slug, solutionConfig };
   }
 
   // Check if we're on a solution page initially
   const initialConfig = getCurrentSolutionConfig();
-  if (!initialConfig) {
-    console.log("Category list logged. Navigate to /community/lists/[slug] to test subscription functionality.");
-    // Don't return here - continue to setup page change handlers
-  }
 
   // Function to get category IDs for current solution
   function getCategoryIds(solutionConfig) {
@@ -149,26 +107,19 @@ export default apiInitializer("0.11.1", (api) => {
       idToCategory[cat.id] = cat;
     });
 
-    // Function to validate and log category IDs for a solution
+    // Function to validate category IDs for a solution
     function validateSolutionCategories(solutionConfig) {
       const { level4Ids, level3Ids } = getCategoryIds(solutionConfig);
       
       const invalidLevel4 = level4Ids.filter(id => !idToCategory[id]);
       const invalidLevel3 = level3Ids.filter(id => !idToCategory[id]);
       
-      if (invalidLevel4.length > 0) {
-        console.error(`❌ Invalid Level 4 category IDs for ${solutionConfig.title}: ${invalidLevel4.join(', ')}`);
-      }
-      
-      if (invalidLevel3.length > 0) {
-        console.error(`❌ Invalid Level 3 category IDs for ${solutionConfig.title}: ${invalidLevel3.join(', ')}`);
-      }
-
-      const validLevel4Names = level4Ids.filter(id => idToCategory[id]).map(id => idToCategory[id].name);
-      const validLevel3Names = level3Ids.filter(id => idToCategory[id]).map(id => idToCategory[id].name);
-
-      console.log(`✅ ${solutionConfig.title} Level 4 categories: ${validLevel4Names.join(', ')} (IDs: ${level4Ids.join(', ')})`);
-      console.log(`✅ ${solutionConfig.title} Level 3 categories: ${validLevel3Names.join(', ')} (IDs: ${level3Ids.join(', ')})`);
+      // Validation without logging - categories are validated silently
+      return {
+        validLevel4: level4Ids.filter(id => idToCategory[id]),
+        validLevel3: level3Ids.filter(id => idToCategory[id]),
+        hasErrors: invalidLevel4.length > 0 || invalidLevel3.length > 0
+      };
     }
 
     // Validate current solution
@@ -378,10 +329,8 @@ export default apiInitializer("0.11.1", (api) => {
           .then(() => {
             btn.innerHTML = subscribing ? `✅ Subscribed&nbsp;<span class="mobile-hidden">To All News & Security Advisories</span>` : `${bellIcon} Subscribe&nbsp;<span class="mobile-hidden">To All News & Security Advisories</span>`;
             btn.classList.toggle("subscribed");
-            console.log(`${subscribing ? '✅ Subscribed to' : '❌ Unsubscribed from'} ${currentConfig.solutionConfig.title} solution`);
           })
           .catch((error) => {
-            console.error("Failed to update subscriptions:", error);
             btn.innerHTML = "❌ Error - Try again";
             setTimeout(() => {
               btn.innerHTML = isSubscribed ? `✅ Subscribed&nbsp;<span class="mobile-hidden">To All News & Security Advisories</span>` : `${bellIcon} Subscribe&nbsp;<span class="mobile-hidden">To All News & Security Advisories</span>`;
