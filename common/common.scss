@@ -1,11 +1,5 @@
-// Hide navigation elements site-wide by default
-#navigation-bar .nav-item_categories,
-#navigation-bar .nav-item_latest, 
-#navigation-bar .nav-item_new,
-#navigation-bar .nav-item_top, 
-#navigation-bar .nav-item_unread {
-  display: none !important;
-}
+// Navigation elements will be hidden only on solution pages via JavaScript
+// No site-wide hiding in CSS
 
 // Hide category/tag dropdowns on solution list pages only
 .category-breadcrumb .category-drop,

@@ -2,15 +2,26 @@ import { apiInitializer } from "discourse/lib/api";
 import { ajax } from "discourse/lib/ajax";
 
 export default apiInitializer("0.11.1", (api) => {
-  // PRIORITY: Hide navigation elements immediately to prevent flash
+  // PRIORITY: Only hide navigation elements on solution pages
   const hideNavElements = () => {
+    // Check if we're currently on a solution page
+    const currentPath = window.location.pathname;
+    const isSolutionPage = currentPath.match(/^\/community\/lists\/([^\/?#]+)/);
+    
+    if (!isSolutionPage) {
+      // Not on a solution page, don't hide navigation elements
+      return;
+    }
+    
     const style = document.createElement('style');
+    style.id = 'solution-page-navigation-hide';
     style.textContent = `
-      #navigation-bar .nav-item_categories,
-      #navigation-bar .nav-item_latest, 
-      #navigation-bar .nav-item_new,
-      #navigation-bar .nav-item_top,
-      #navigation-bar .nav-item_unread {
+      /* Only hide navigation on solution pages */
+      body[data-current-path*="/community/lists/"] #navigation-bar .nav-item_categories,
+      body[data-current-path*="/community/lists/"] #navigation-bar .nav-item_latest, 
+      body[data-current-path*="/community/lists/"] #navigation-bar .nav-item_new,
+      body[data-current-path*="/community/lists/"] #navigation-bar .nav-item_top,
+      body[data-current-path*="/community/lists/"] #navigation-bar .nav-item_unread {
         display: none !important;
       }
       
@@ -34,13 +45,20 @@ export default apiInitializer("0.11.1", (api) => {
         }
       }
     `;
+    
+    // Remove existing style to prevent duplicates
+    const existingStyle = document.querySelector('#solution-page-navigation-hide');
+    if (existingStyle) {
+      existingStyle.remove();
+    }
+    
     document.head.appendChild(style);
     
-    // Also hide immediately with JavaScript
+    // Only hide navigation elements on solution pages
     const navItems = document.querySelectorAll('#navigation-bar .nav-item_categories, #navigation-bar .nav-item_latest, #navigation-bar .nav-item_new, #navigation-bar .nav-item_top, #navigation-bar .nav-item_unread');
     navItems.forEach(item => item.style.display = 'none');
     
-    // Hide category and tag filter dropdowns
+    // Hide category and tag filter dropdowns only on solution pages
     const filterDropdowns = document.querySelectorAll('.category-breadcrumb .category-drop, .category-breadcrumb .tag-drop:not(.custom-list-dropdown)');
     filterDropdowns.forEach(item => item.style.display = 'none');
     
@@ -56,14 +74,53 @@ export default apiInitializer("0.11.1", (api) => {
     });
   };
   
-  // Execute immediately
-  hideNavElements();
+  // Function to show navigation elements when not on solution pages
+  const showNavElements = () => {
+    // Remove solution page specific styles
+    const existingStyle = document.querySelector('#solution-page-navigation-hide');
+    if (existingStyle) {
+      existingStyle.remove();
+    }
+    
+    // Restore navigation elements
+    const navItems = document.querySelectorAll('#navigation-bar .nav-item_categories, #navigation-bar .nav-item_latest, #navigation-bar .nav-item_new, #navigation-bar .nav-item_top, #navigation-bar .nav-item_unread');
+    navItems.forEach(item => item.style.display = '');
+    
+    // Restore category and tag filter dropdowns
+    const filterDropdowns = document.querySelectorAll('.category-breadcrumb .category-drop, .category-breadcrumb .tag-drop:not(.custom-list-dropdown)');
+    filterDropdowns.forEach(item => item.style.display = '');
+    
+    // Restore parent <li> elements
+    const breadcrumbItems = document.querySelectorAll('.category-breadcrumb li');
+    breadcrumbItems.forEach((li, index) => {
+      if (index < 2) {
+        li.style.display = '';
+      }
+    });
+  };
   
-  // Also run on DOM ready and with intervals for persistent hiding
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', hideNavElements);
-  } else {
+  // Execute based on current page
+  const currentPath = window.location.pathname;
+  const isSolutionPage = currentPath.match(/^\/community\/lists\/([^\/?#]+)/);
+  
+  if (isSolutionPage) {
     hideNavElements();
+  } else {
+    showNavElements();
+  }
+  
+  // Also run on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentPath = window.location.pathname;
+      const isSolutionPage = currentPath.match(/^\/community\/lists\/([^\/?#]+)/);
+      
+      if (isSolutionPage) {
+        hideNavElements();
+      } else {
+        showNavElements();
+      }
+    });
   }
   
   // Function to get current solution config
@@ -379,33 +436,48 @@ export default apiInitializer("0.11.1", (api) => {
     }
 
     api.onPageChange(() => {
-      // Force update header for solution page changes
-      const header = document.querySelector(".category-title-header");
-      if (header) {
-        styleHeader(header, true); // Force update
-      }
+      // Check if we're on a solution page and show/hide navigation accordingly
+      const currentPath = window.location.pathname;
+      const isSolutionPage = currentPath.match(/^\/community\/lists\/([^\/?#]+)/);
       
-      // Fallback with minimal delay for DOM readiness
-      setTimeout(() => {
-        const headerDelayed = document.querySelector(".category-title-header");
-        if (headerDelayed) {
-          styleHeader(headerDelayed, true); // Force update
+      if (isSolutionPage) {
+        hideNavElements();
+        
+        // Force update header for solution page changes
+        const header = document.querySelector(".category-title-header");
+        if (header) {
+          styleHeader(header, true); // Force update
         }
-      }, 50);
+        
+        // Fallback with minimal delay for DOM readiness
+        setTimeout(() => {
+          const headerDelayed = document.querySelector(".category-title-header");
+          if (headerDelayed) {
+            styleHeader(headerDelayed, true); // Force update
+          }
+        }, 50);
 
-      // Update subscribe button
-      updateSubscribeButton();
-      
-      // Fallback for subscribe button
-      setTimeout(() => {
+        // Update subscribe button
         updateSubscribeButton();
-      }, 100);
-
-      // Hide navigation elements
-      hideNavigationElements();
-      setTimeout(() => {
+        
+        // Fallback for subscribe button
+        setTimeout(() => {
+          updateSubscribeButton();
+        }, 100);
+        
+        // Hide navigation elements specific to solution pages
         hideNavigationElements();
-      }, 100);
+        setTimeout(() => {
+          hideNavigationElements();
+        }, 100);
+      } else {
+        // Not on solution page, restore navigation elements
+        showNavElements();
+        
+        // Remove subscribe button if not on solution page
+        const existingWrapper = document.querySelector("#solution-subscribe-wrapper");
+        if (existingWrapper) existingWrapper.remove();
+      }
     });
   });
 
