@@ -122,9 +122,17 @@ export default apiInitializer("0.11.1", (api) => {
       };
     }
 
-    // Validate current solution
+    // Validate current solution and ensure header exists
     if (initialConfig) {
       validateSolutionCategories(initialConfig.solutionConfig);
+      
+      // Ensure header exists and is styled for initial page load
+      setTimeout(() => {
+        const header = findOrCreateHeader();
+        if (header) {
+          styleHeader(header, true);
+        }
+      }, 100);
     }
 
     // Function to update dropdown text
@@ -172,6 +180,41 @@ export default apiInitializer("0.11.1", (api) => {
       const { level4Ids, level3Ids } = getCategoryIds(solutionConfig);
       return level4Ids.length > 0 && level4Ids.every((id) => watchedFirst.includes(id)) &&
              level3Ids.length > 0 && level3Ids.every((id) => watched.includes(id));
+    }
+
+    // Function to find or create header element
+    function findOrCreateHeader() {
+      // Try to find existing header
+      let header = document.querySelector(".category-title-header");
+      
+      if (!header) {
+        // If no header exists, try to find a suitable parent element to inject it into
+        const possibleParents = [
+          ".category-header",
+          ".above-topic-list", 
+          ".topic-list-container",
+          ".navigation-container",
+          ".contents"
+        ];
+        
+        let parentElement = null;
+        for (const selector of possibleParents) {
+          parentElement = document.querySelector(selector);
+          if (parentElement) break;
+        }
+        
+        if (parentElement) {
+          // Create the header element
+          header = document.createElement("div");
+          header.className = "category-title-header";
+          header.style.visibility = "hidden"; // Initially hidden until styled
+          
+          // Insert at the beginning of the parent
+          parentElement.insertBefore(header, parentElement.firstChild);
+        }
+      }
+      
+      return header;
     }
 
     // Header styling function for reuse
@@ -382,14 +425,14 @@ export default apiInitializer("0.11.1", (api) => {
 
     api.onPageChange(() => {
       // Force update header for solution page changes
-      const header = document.querySelector(".category-title-header");
+      const header = findOrCreateHeader();
       if (header) {
         styleHeader(header, true); // Force update
       }
       
       // Fallback with minimal delay for DOM readiness
       setTimeout(() => {
-        const headerDelayed = document.querySelector(".category-title-header");
+        const headerDelayed = findOrCreateHeader();
         if (headerDelayed) {
           styleHeader(headerDelayed, true); // Force update
         }
