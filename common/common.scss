@@ -1,1 +1,65 @@
-// Theme's SCSS
+// Hide navigation elements site-wide by default
+#navigation-bar .nav-item_categories,
+#navigation-bar .nav-item_latest, 
+#navigation-bar .nav-item_new,
+#navigation-bar .nav-item_top, 
+#navigation-bar .nav-item_unread {
+  display: none !important;
+}
+
+// Hide category/tag dropdowns on solution list pages only
+.category-breadcrumb .category-drop,
+.category-breadcrumb .tag-drop:not(.custom-list-dropdown) {
+  // This will be handled by JavaScript for solution pages only
+}
+
+// Subscribe button styling
+#solution-subscribe-button {
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+  }
+  
+  &.subscribed {
+    background-color: var(--success) !important;
+    border-color: var(--success) !important;
+    color: white !important;
+  }
+  
+  .mobile-hidden {
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+}
+
+// Solution header styling - ensure proper visibility
+.category-title-header {
+  visibility: hidden; // Hidden by default, shown by JavaScript when styled
+  
+  &.header-styled {
+    visibility: visible !important;
+  }
+}
+
+// Responsive line breaks for solution titles
+.category-title .break-medium,
+.category-title .break-small {
+  display: none !important;
+}
+
+@media (max-width: 1200px) {
+  .category-title .break-medium {
+    display: inline !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .category-title .break-small {
+    display: inline !important;
+  }
+}
